@@ -23,6 +23,18 @@ public class ContributionService {
 	@Autowired
 	private ContributionTypeRepository contribTypeRepo;
 
+	/**
+	 * Retrieves existing or creates a new ContributionType entity with the
+	 * provided type. It then creates a new empty Contribution entity and
+	 * connects it with the type. Both changed/created entities are saved to
+	 * DiscourseDB and the empty typed Contribution is returned. It then adds
+	 * the new empty Contribution to the db and returns the object.
+	 * 
+	 * @param type
+	 *            the value for the ContributionTyep
+	 * @return a new empty Contribution that is already saved to the db and
+	 *         connected with its requested type
+	 */
 	public Contribution createTypedContribution(ContributionTypes type){		
 		Optional<ContributionType> optContribType = contribTypeRepo.findOneByType(type.name());
 		ContributionType contribType = null;
@@ -39,6 +51,12 @@ public class ContributionService {
 		return contributionRepo.save(contrib);
 	}		
 	
+	/**
+	 * Saves the provided entity to the db using the save method of the corresponding repository
+	 * 
+	 * @param contrib the entity to save
+	 * @return the possibly altered entity after the save process 
+	 */
 	public Contribution save(Contribution contrib){
 		return contributionRepo.save(contrib);
 	}
