@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Contribution;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.ContributionType;
+import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscourseRelation;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscourseRelationType;
 import edu.cmu.cs.lti.discoursedb.core.model.system.DataSourceInstance;
@@ -99,6 +100,24 @@ public class ContributionService {
 		Optional<ContributionType> existingType = contribTypeRepo.findOneByType(type.name());
 		if(existingType.isPresent()){
 			return contributionRepo.findAllByType(existingType.get());			
+		}else{
+			return new ArrayList<Contribution>(0);
+		}
+	}
+
+	
+	/**
+	 * Returns a list of all contributions of a given type that are associated with the given discourse
+	 * 
+	 * @param discourse the discourse the contributions need to be associated with
+	 * @param type the contribution type to look for
+	 * @return a list of Contributions of the given type that potentially might be empty
+	 */
+	public Iterable<Contribution> findAllByType(Discourse discourse, ContributionTypes type){
+		Optional<ContributionType> existingType = contribTypeRepo.findOneByType(type.name());
+		if(existingType.isPresent()){
+			return contributionRepo.findAll(
+					ContributionPredicates.contributionHasDiscourse(discourse).and(ContributionPredicates.contributionHasType(type)));			
 		}else{
 			return new ArrayList<Contribution>(0);
 		}
