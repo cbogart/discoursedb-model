@@ -121,6 +121,7 @@ public class DiscoursePartService {
 		return dPart;
 	}		
 
+	
 		
 	/**
 	 * Adds the given contribution to the provided DiscoursePart.
@@ -197,6 +198,27 @@ public class DiscoursePartService {
 	
 	public Optional<DiscoursePart> findOneByName(String name){
 		return discoursePartRepo.findOneByName(name);		
+	}
+	
+	/**
+	 * Finds one DiscoursePart of the given type, with the given name and associated with the given discourse
+	 *  
+	 * @param discourse the associated discourse
+	 * @param discoursePartName the name of the discourse part
+	 * @param type the DiscoursePartType
+	 * @return and Optional that contains a DiscoursePart if it exists
+	 */
+	public Optional<DiscoursePart> findOne(Discourse discourse, String discoursePartName, DiscoursePartTypes type){
+		
+		Optional<DiscoursePartType> discoursePartType = discoursePartTypeRepo.findOneByType(type.name());
+		if(!discoursePartType.isPresent()){
+			return Optional.empty();
+		}		
+
+		return Optional.ofNullable(discoursePartRepo.findOne(
+				DiscoursePartPredicates.discoursePartHasName(discoursePartName).and(
+				DiscoursePartPredicates.discoursePartHasType(discoursePartType.get()).and(
+				DiscoursePartPredicates.discoursePartHasDiscourse(discourse)))));
 	}
 	
 	/**
