@@ -35,7 +35,13 @@ public class ContentService {
 		return contentRepo.findOne(id);
 	}
 	
+	public void setNextRevision(Long id, Long nextRevId){
+		contentRepo.setNextRevisionId(id, nextRevId);
+	}
 	
+	public void setPreviousRevision(Long id, Long previousRevId){
+		contentRepo.setPreviousRevisionId(id, previousRevId);
+	}
 
 
 }
