@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Context;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.ContextType;
@@ -39,7 +40,8 @@ public class ContextService {
 	 * @return a new empty Context that is already saved to the db and
 	 *         connected with its requested type
 	 */
-	public Context createTypedContext(ContextTypes type){		
+	public Context createTypedContext(ContextTypes type){
+		Assert.notNull(type);
 		Optional<ContextType> existingContextType = contextTypeRepo.findOneByType(type.name());
 		ContextType contextType = null;
 		if(existingContextType.isPresent()){
@@ -63,6 +65,8 @@ public class ContextService {
 	 * @param contrib the contribution that is part of the given DiscoursePart.
 	 */
 	public void addContributionToContext(Context context, Contribution contrib){	
+		Assert.notNull(context);
+		Assert.notNull(contrib);
 		Optional<ContributionContext> existingContributionContext = contributionContextRepo.findOneByContributionAndContext(contrib, context);
 		if(!existingContributionContext.isPresent()){
 			ContributionContext contributionContext = new ContributionContext();
@@ -76,9 +80,11 @@ public class ContextService {
 	}
 	
 	public Context findOne(long id){
+		Assert.isTrue(id>0);
 		return contextRepo.findOne(id);
 	}
 	public Context save(Context ctx){
+		Assert.notNull(ctx);
 		return contextRepo.save(ctx);
 	}
 	

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Contribution;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
@@ -66,6 +67,9 @@ public class DiscoursePartService {
 	 *         connected with its requested type
 	 */
 	public DiscoursePart createOrGetTypedDiscoursePart(Discourse discourse, DiscoursePartTypes type){
+		Assert.notNull(discourse);
+		Assert.notNull(type);
+
 		return createOrGetTypedDiscoursePart(discourse,discourse.getName()+"_"+type.name(),type);
 	}
 	/**
@@ -85,6 +89,10 @@ public class DiscoursePartService {
 	 *         connected with its requested type
 	 */
 	public DiscoursePart createOrGetTypedDiscoursePart(Discourse discourse, String discoursePartName, DiscoursePartTypes type){		
+		Assert.notNull(discourse);
+		Assert.notNull(discoursePartName);
+		Assert.notNull(type);
+
 		Optional<DiscoursePartType> optDiscoursePartType = discoursePartTypeRepo.findOneByType(type.name());
 		DiscoursePartType discoursePartType = null;
 		if(optDiscoursePartType.isPresent()){
@@ -142,6 +150,9 @@ public class DiscoursePartService {
 	 *         connected with its requested type
 	 */
 	public DiscoursePart createTypedDiscoursePart(Discourse discourse, DiscoursePartTypes type){
+		Assert.notNull(discourse);
+		Assert.notNull(type);
+
 		return createTypedDiscoursePart(discourse,discourse.getName()+"_"+type.name(),type);
 	}
 	/**
@@ -158,7 +169,11 @@ public class DiscoursePartService {
 	 * @return a new empty DiscoursePart that is already saved to the db and
 	 *         connected with its requested type
 	 */
-	public DiscoursePart createTypedDiscoursePart(Discourse discourse, String discoursePartName, DiscoursePartTypes type){		
+	public DiscoursePart createTypedDiscoursePart(Discourse discourse, String discoursePartName, DiscoursePartTypes type){
+		Assert.notNull(discourse);
+		Assert.notNull(discoursePartName);
+		Assert.notNull(type);
+		
 		Optional<DiscoursePartType> optDiscoursePartType = discoursePartTypeRepo.findOneByType(type.name());
 		DiscoursePartType discoursePartType = null;
 		if(optDiscoursePartType.isPresent()){
@@ -193,6 +208,9 @@ public class DiscoursePartService {
 	 * @param dPArt the DiscoursePart that contains the given contribution.
 	 */
 	public void addContributionToDiscoursePart(Contribution contrib, DiscoursePart dPArt){	
+		Assert.notNull(contrib);
+		Assert.notNull(dPArt);
+		
 		Optional<DiscoursePartContribution> existingDiscoursePartContrib = discoursePartContributionRepo.findOneByContributionAndDiscoursePart(contrib, dPArt);
 		if(!existingDiscoursePartContrib.isPresent()){
 			DiscoursePartContribution discoursePartContrib = new DiscoursePartContribution();
@@ -220,6 +238,10 @@ public class DiscoursePartService {
 	 * @return a DiscoursePartRelation between the two provided DiscourseParts with the given type that has already been saved to the database 
 	 */
 	public DiscoursePartRelation createDiscoursePartRelation(DiscoursePart sourceDiscoursePart, DiscoursePart targetDiscoursePart, DiscoursePartRelationTypes type) {
+		Assert.notNull(sourceDiscoursePart);
+		Assert.notNull(targetDiscoursePart);
+		Assert.notNull(type);
+		
 		//Retrieve type or create if it doesn't exist in db
 		DiscoursePartRelationType discoursePartRelationType = null;
 		Optional<DiscoursePartRelationType> existingPartDiscourseRelationType = discoursePartRelationTypeRepo.findOneByType(type.name());
@@ -255,6 +277,9 @@ public class DiscoursePartService {
 	 * @return a DiscoursePartRelation between the two provided DiscourseParts with the given type that has already been saved to the database 
 	 */
 	public List<DiscoursePart> findChildDiscourseParts(DiscoursePart sourceDiscoursePart, DiscoursePartRelationTypes type) {
+		Assert.notNull(sourceDiscoursePart);
+		Assert.notNull(type);
+		
 		List<DiscoursePart> returnList = new ArrayList<>();
 		
 		//Retrieve type or create if it doesn't exist in db
@@ -283,6 +308,8 @@ public class DiscoursePartService {
 	 * @return the possibly altered entity after the save process 
 	 */
 	public DiscoursePart save(DiscoursePart part){
+		Assert.notNull(part);
+
 		return discoursePartRepo.save(part);
 	}
 	
@@ -295,6 +322,9 @@ public class DiscoursePartService {
 	 * @return true, if the DiscoursePart exists. False, otherwise
 	 */
 	public boolean exists(Discourse discourse, String discoursePartName, DiscoursePartTypes type){
+		Assert.notNull(discourse);
+		Assert.notNull(discoursePartName);
+		Assert.notNull(type);
 		
 		Optional<DiscoursePartType> discoursePartType = discoursePartTypeRepo.findOneByType(type.name());
 		if(!discoursePartType.isPresent()){
@@ -314,6 +344,8 @@ public class DiscoursePartService {
 	 * @return a list of discoursepart of the given type that might be empty
 	 */
 	public List<DiscoursePart> findAllByType(DiscoursePartTypes type){
+		Assert.notNull(type);
+		
 		Optional<DiscoursePartType> dpType = discoursePartTypeRepo.findOneByType(type.name());
 		if(dpType.isPresent()){
 			return discoursePartRepo.findAllByType(dpType.get());					
