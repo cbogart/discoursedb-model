@@ -87,13 +87,13 @@ jdbc.username = local
 jdbc.password = local
 
 # Default hibernate.properties
-hibernate.dialect = org.hibernate.dialect.MySQLDialect
+hibernate.dialect = edu.cmu.cs.lti.discoursedb.configuration.DiscourseDBMysqlDialect
 hibernate.ejb.naming_strategy=org.hibernate.cfg.ImprovedNamingStrategy
 hibernate.show_sql = false
 hibernate.format_sql = false
 hibernate.hbm2ddl.auto = update
 hibernate.jdbc.batch_size = 100
-hibernate.id.new_generator_mappings = true
+hibernate.id.new_generator_mappings = false
 
 # Default c3p0 properties
 c3p0.acquireIncrement = 5 
