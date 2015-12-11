@@ -38,6 +38,7 @@ public class DataSourceService {
 	 *            the name of the dataset, e.g. edx_dalmooc_20150202
 	 * @return an optional containing the DataSourceInstance if it exist, empty otherwise
 	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Optional<DataSourceInstance> findDataSource(String entitySourceId, String entitySourceDescriptor, String dataSetName ){
 		Assert.hasText(entitySourceId);
 		Assert.hasText(entitySourceDescriptor);
@@ -55,6 +56,7 @@ public class DataSourceService {
 	 * @param dataSetName the name of the dataset (e.g. file name or dataset name)
 	 * @return true, if any data from that dataset has been imported previously. false, else.
 	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public boolean dataSourceExists(String dataSetName){		
 		Assert.hasText(dataSetName);
 
@@ -67,6 +69,7 @@ public class DataSourceService {
 	 * @param dataSetName the name of the dataset (e.g. file name or dataset name)
 	 * @return true, if any data from that dataset has been imported previously. false, else.
 	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public boolean dataSourceExists(String sourceId, String sourceIdDescriptor, String dataSetName){		
 		Assert.hasText(sourceId);
 		Assert.hasText(sourceIdDescriptor);
@@ -111,6 +114,7 @@ public class DataSourceService {
 	 * @param entitySourceDescriptor the descriptor of the datasource to be retrieved
 	 * @return a DataSourceInstance with the given descriptor for the given entity
 	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public <T extends TimedAnnotatableBaseEntityWithSource> Optional<DataSourceInstance> findDataSource(T entity, String entitySourceDescriptor) {
 		Assert.notNull(entity);
 		Assert.hasText(entitySourceDescriptor);
@@ -125,6 +129,7 @@ public class DataSourceService {
 	 * @param entitySourceDescriptor the descriptor of the datasource to be retrieved
 	 * @return a DataSourceInstance with the given descriptor for the given entity
 	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public <T extends UntimedBaseEntityWithSource> Optional<DataSourceInstance> findDataSource(T entity, String entitySourceDescriptor) {
 		Assert.notNull(entity);
 		Assert.hasText(entitySourceDescriptor);
@@ -132,6 +137,7 @@ public class DataSourceService {
 		return entity.getDataSourceAggregate().getSources().stream().filter(e -> e.getEntitySourceDescriptor().equals(entitySourceDescriptor)).findAny();
 	}
 	
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public <T extends TimedAnnotatableBaseEntityWithSource> boolean hasSourceId(T entity, String sourceId) {
 		Assert.notNull(entity);
 		Assert.hasText(sourceId);
@@ -140,6 +146,7 @@ public class DataSourceService {
 				.anyMatch(e -> e.getEntitySourceId().equals(sourceId));
 	}
 
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public <T extends UntimedBaseEntityWithSource> boolean hasSourceId(T entity, String sourceId) {
 		Assert.notNull(entity);
 		Assert.hasText(sourceId);

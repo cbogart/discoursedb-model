@@ -60,6 +60,7 @@ public class UserService {
 	@Autowired
 	private DiscoursePartInteractionTypeRepository discoursePartInteractionTypeRepo;
 
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
     public Optional<User> findUserByDiscourseAndSourceIdAndSourceType(Discourse discourse, String sourceId, DataSourceTypes type) {
 		Assert.notNull(discourse);
 		Assert.hasText(sourceId);
@@ -71,6 +72,7 @@ public class UserService {
 						UserPredicates.hasDataSourceType(type))));
     }
 
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
     public Optional<User> findUserByDiscourseAndSourceIdAndDataSet(Discourse discourse, String sourceId, String dataSetName) {
 		Assert.notNull(discourse);
 		Assert.hasText(sourceId);
@@ -82,6 +84,7 @@ public class UserService {
 						UserPredicates.hasDataSet(dataSetName))));
     }
 
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
     public Optional<User> findUserByDiscourseAndSourceId(Discourse discourse, String sourceId) {
 		Assert.notNull(discourse);
 		Assert.hasText(sourceId);
@@ -91,6 +94,7 @@ public class UserService {
 						UserPredicates.hasSourceId(sourceId))));
     }
 
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
     public Optional<User> findUserBySourceIdAndUsername(String sourceId, String username) {
 		Assert.hasText(sourceId);
 		Assert.hasText(username);
@@ -100,6 +104,7 @@ public class UserService {
 						UserPredicates.hasUserName(username))));
     }
 
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
     public Iterable<User> findUsersBySourceId(String sourceId) {
 		Assert.hasText(sourceId);
 		
