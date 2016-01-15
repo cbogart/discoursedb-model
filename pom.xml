@@ -75,10 +75,6 @@
 			<artifactId>querydsl-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mysema.querydsl</groupId>
-			<artifactId>querydsl-collections</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>javax.interceptor</groupId>
 			<artifactId>javax.interceptor-api</artifactId>
 		</dependency>
