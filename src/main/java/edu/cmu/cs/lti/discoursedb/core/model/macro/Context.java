@@ -18,6 +18,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntityWithSource;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 /**
  * Context is whatever a Contribution is referring to. For example if the
@@ -31,73 +35,34 @@ import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntityWithSourc
  * @author Oliver Ferschke
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name="context")
 public class Context extends TimedAnnotatableBaseEntityWithSource implements Serializable {
 
 	private static final long serialVersionUID = 6013322457584994562L;
 
-	private long id;
-	
-	private Content firstRevision;
-	
-	private Content currentRevision;
-	
-	private ContextType type;
-	
-	private Set<ContributionContext> contextContributions = new HashSet<ContributionContext>();
-
-	public Context(){}
-
 	@Id
 	@Column(name="id_context", nullable=false)
+	@Setter(AccessLevel.PRIVATE)
     @GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return id;
-	}
-
-	@SuppressWarnings("unused") //used by hibernate through reflection, but not exposed to users
-	private void setId(long id) {
-		this.id = id;
-	}
+	private Long id;
+	
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch=FetchType.LAZY) 
 	@JoinColumn(name = "fk_first_revision")
-	public Content getFirstRevision() {
-		return firstRevision;
-	}
-
-	public void setFirstRevision(Content firstRevision) {
-		this.firstRevision = firstRevision;
-	}
-
+	private Content firstRevision;
+	
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch=FetchType.LAZY) 
 	@JoinColumn(name = "fk_current_revision")
-	public Content getCurrentRevision() {
-		return currentRevision;
-	}
-
-	public void setCurrentRevision(Content currentRevision) {
-		this.currentRevision = currentRevision;
-	}
-
+	private Content currentRevision;
+	
 	@ManyToOne(cascade=CascadeType.ALL) 
 	@JoinColumn(name = "fk_context_type")
-	public ContextType getType() {
-		return type;
-	}
-
-	public void setType(ContextType type) {
-		this.type = type;
-	}
-
+	private ContextType type;
+	
     @OneToMany(mappedBy = "context")
-	public Set<ContributionContext> getContextContributions() {
-		return contextContributions;
-	}
-
-	public void setContextContributions(Set<ContributionContext> contextContributions) {
-		this.contextContributions = contextContributions;
-	}
+	private Set<ContributionContext> contextContributions = new HashSet<ContributionContext>();
 
 	public void addContextContributions(ContributionContext contextContribution) {
 		this.contextContributions.add(contextContribution);
