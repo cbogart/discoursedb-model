@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"features"})
+@ToString(callSuper=true, exclude={"features"})
 @Entity
 @Table(name="feature_type")
 public class FeatureType extends BaseTypeEntity implements Serializable{

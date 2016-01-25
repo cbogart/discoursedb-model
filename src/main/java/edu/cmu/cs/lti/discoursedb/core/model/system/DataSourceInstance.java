@@ -21,10 +21,12 @@ import edu.cmu.cs.lti.discoursedb.core.type.DataSourceTypes;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
+@NoArgsConstructor
 @Entity
 @Table(name = "data_source_instance", uniqueConstraints = @UniqueConstraint(columnNames = { "entity_source_id",
 		"entity_source_descriptor", "dataset_name" }) , indexes = {
@@ -58,8 +60,6 @@ public class DataSourceInstance extends UntimedBaseEntity implements Serializabl
 	@JoinColumn(name = "fk_sources")
 	private DataSources sourceAggregate;
 	
-	DataSourceInstance(){}
-
 	/**
 	 * Creates a new DataSourceInstance for the entity with the source id
 	 * "entitySourceId" based on the dataset with the provided name

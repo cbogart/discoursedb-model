@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"contributions"})
+@ToString(callSuper=true, exclude={"contributions"})
 @Entity
 @Table(name="contribution_type")
 public class ContributionType extends BaseTypeEntity implements Serializable {

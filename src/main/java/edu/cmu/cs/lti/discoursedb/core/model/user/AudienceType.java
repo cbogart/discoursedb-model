@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"audiences"})
+@ToString(callSuper=true, exclude={"audiences"})
 @Entity
 @Table(name="audience_type")
 public class AudienceType extends BaseTypeEntity implements Serializable {

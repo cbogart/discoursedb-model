@@ -16,7 +16,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import edu.cmu.cs.lti.discoursedb.core.model.annotation.Annotations;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Adds basic fields to entities that keep track of their lifetime (Version,
@@ -26,6 +28,8 @@ import lombok.Setter;
  *
  */
 @Data
+@EqualsAndHashCode(exclude={"annotations"})
+@ToString(exclude={"annotations"})
 @MappedSuperclass
 public abstract class TimedAnnotatableBaseEntity{
 

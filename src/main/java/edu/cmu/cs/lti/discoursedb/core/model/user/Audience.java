@@ -21,9 +21,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"audienceContributions","audienceUsers","audienceGroups"})
+@ToString(callSuper=true, exclude={"audienceContributions","audienceUsers","audienceGroups"})
 @Entity
 @Table(name="audience")
 public class Audience extends TimedAnnotatableBaseEntityWithSource implements Serializable {

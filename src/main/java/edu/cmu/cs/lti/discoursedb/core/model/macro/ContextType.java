@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"contexts"})
+@ToString(callSuper=true, exclude={"contexts"})
 @Entity
 @Table(name="context_type")
 public class ContextType extends BaseTypeEntity implements Serializable {

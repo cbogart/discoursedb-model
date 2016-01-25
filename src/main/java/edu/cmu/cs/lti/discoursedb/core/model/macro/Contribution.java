@@ -23,6 +23,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
@@ -43,7 +44,8 @@ import lombok.Setter;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"contributionPartOfDiscourseParts","contributionAudiences","contributionContexts","sourceOfDiscourseRelations","targetOfDiscourseRelations","contributionInteractions"})
+@ToString(callSuper=true, exclude={"contributionPartOfDiscourseParts","contributionAudiences","contributionContexts","sourceOfDiscourseRelations","targetOfDiscourseRelations","contributionInteractions"})
 @Entity
 @Table(name="contribution")
 public class Contribution extends TimedAnnotatableBaseEntityWithSource implements Serializable {

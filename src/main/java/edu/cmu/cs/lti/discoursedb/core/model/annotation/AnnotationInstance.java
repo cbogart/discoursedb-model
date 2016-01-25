@@ -21,9 +21,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"annotationAggregate"})
+@ToString(callSuper=true, exclude={"annotationAggregate"})
 @Entity
 @Table(name="annotation_instance")
 public class AnnotationInstance extends UntimedBaseEntityWithSource implements Serializable{

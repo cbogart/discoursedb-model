@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A DiscoursePart represents a distinct sub-space within a Discourse. For
@@ -40,7 +41,8 @@ import lombok.Setter;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"discourseToDiscourseParts","discoursePartContributions","sourceOfDiscoursePartRelations","targetOfDiscoursePartRelations"})
+@ToString(callSuper=true, exclude={"discourseToDiscourseParts","discoursePartContributions","sourceOfDiscoursePartRelations","targetOfDiscoursePartRelations"})
 @Entity
 @Table(name="discourse_part", indexes = { @Index(name = "discoursePartNameIndex", columnList = "name") })
 public class DiscoursePart extends TimedAnnotatableBaseEntityWithSource implements Serializable{

@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"contributionInteractions"})
+@ToString(callSuper=true, exclude={"contributionInteractions"})
 @Entity
 @Table(name="contribution_interaction_type")
 public class ContributionInteractionType extends BaseTypeEntity implements Serializable{

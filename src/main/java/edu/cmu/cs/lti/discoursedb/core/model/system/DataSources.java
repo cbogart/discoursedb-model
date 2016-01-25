@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Aggregate entity that aggregates all DataSources of the associated entity.
@@ -26,7 +27,8 @@ import lombok.Setter;
  * A source can only have one entity, but an entity can have multiple sources.
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"sources"})
+@ToString(callSuper=true, exclude={"sources"})
 @Entity
 @Table(name="data_sources")
 public class DataSources extends UntimedBaseEntity implements Serializable{

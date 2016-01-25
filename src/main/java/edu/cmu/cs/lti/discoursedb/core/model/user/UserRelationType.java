@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"userRelations"})
+@ToString(callSuper=true, exclude={"userRelations"})
 @Entity
 @Table(name="user_relation_type")
 public class UserRelationType extends BaseTypeEntity implements Serializable {

@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"discourseParts"})
+@ToString(callSuper=true, exclude={"discourseParts"})
 @Entity
 @Table(name="discourse_part_type")
 public class DiscoursePartType extends BaseTypeEntity implements Serializable {

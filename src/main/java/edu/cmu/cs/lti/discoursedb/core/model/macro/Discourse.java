@@ -22,7 +22,9 @@ import edu.cmu.cs.lti.discoursedb.core.model.user.User;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>A Discourse represents the broad context of interactions that might come from
@@ -42,7 +44,9 @@ import lombok.Setter;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=true, exclude={"discourseToDiscourseParts","users"})
+@ToString(callSuper=true, exclude={"discourseToDiscourseParts","users"})
 @Entity
 @Table(name = "discourse", indexes = { @Index(name = "discourseNameIndex", columnList = "name") })
 public class Discourse extends UntimedBaseEntity implements Serializable {

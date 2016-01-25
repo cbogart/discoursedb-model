@@ -23,7 +23,9 @@ import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A User is uniquely identified by a source_id,username pair. Neither source_id
@@ -36,7 +38,9 @@ import lombok.Setter;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=true, exclude={"contentInteractions","userAudiences","userGroups","sourceOfUserRelations","targetOfUserRelations"})
+@ToString(callSuper=true, exclude={"contentInteractions","userAudiences","userGroups","sourceOfUserRelations","targetOfUserRelations"})
 @Entity
 @Table(name = "user", indexes = { @Index(name = "userNameIndex", columnList = "username") })
 public class User extends TimedAnnotatableBaseEntityWithSource implements Serializable {

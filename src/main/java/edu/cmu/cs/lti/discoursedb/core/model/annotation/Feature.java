@@ -17,9 +17,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"annotation"})
+@ToString(callSuper=true, exclude={"annotation"})
 @Entity
 @Table(name="feature")
 public class Feature extends UntimedBaseEntity implements Serializable{

@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"groups"})
+@ToString(callSuper=true, exclude={"groups"})
 @Entity
 @Table(name="group_type")
 public class GroupType extends BaseTypeEntity implements Serializable{
