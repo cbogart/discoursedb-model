@@ -253,7 +253,7 @@ public class UserService {
 			return existingDPInteraction.get();
 		}else{
 			DiscoursePartInteraction dpInteraction = new DiscoursePartInteraction();
-			dpInteraction.setDiscoursepart(dp);
+			dpInteraction.setDiscoursePart(dp);
 			dpInteraction.setUser(user);
 			dpInteraction.setType(dpInteractionType);
 			return discoursePartInteractionRepo.save(dpInteraction);			

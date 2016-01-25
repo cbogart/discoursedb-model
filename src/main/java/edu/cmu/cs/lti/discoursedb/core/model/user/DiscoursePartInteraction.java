@@ -39,7 +39,7 @@ public class DiscoursePartInteraction extends TimedAnnotatableBaseEntity impleme
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_discourse_part")
-	private DiscoursePart discoursepart;
+	private DiscoursePart discoursePart;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "fk_discourse_part_interaction_type")
