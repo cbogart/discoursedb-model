@@ -24,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Content entities represent the content of Contribution and Context entities.
@@ -43,7 +44,8 @@ import lombok.Setter;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"contributionInteractions"})
+@ToString(callSuper=true, exclude={"contributionInteractions"})
 @Entity
 @Table(name="content")
 public class Content extends TimedAnnotatableBaseEntityWithSource implements Serializable {

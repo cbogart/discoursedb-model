@@ -22,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Context is whatever a Contribution is referring to. For example if the
@@ -36,7 +37,8 @@ import lombok.Setter;
  *
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true, exclude={"contextContributions"})
+@ToString(callSuper=true, exclude={"contextContributions"})
 @Entity
 @Table(name="context")
 public class Context extends TimedAnnotatableBaseEntityWithSource implements Serializable {
