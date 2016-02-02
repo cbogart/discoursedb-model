@@ -13,20 +13,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Contribution;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.ContributionType;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscoursePart;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscourseRelation;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscourseRelationType;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.QContribution;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.QDiscourse;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.QDiscoursePart;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.QDiscoursePartContribution;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.QDiscourseToDiscoursePart;
 import edu.cmu.cs.lti.discoursedb.core.model.system.DataSourceInstance;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContributionRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContributionTypeRepository;
@@ -128,56 +120,18 @@ public class ContributionService {
 		}
 	}
 
-//	/**
-//	 * Returns a list of all contributions for a given discourse
-//	 * 
-//	 * @param discourse the discourse the contributions need to be associated with
-//	 * @return a list of Contributions of the given discourse that potentially might be empty
-//	 */
-//	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
-//	public Iterable<Contribution> findAllByDiscourse(Discourse discourse){
-//		Assert.notNull(discourse);
-//		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscourse(discourse));			
-//	}
-	
 	/**
-	 * Returns a list of all contributions for a given discourse.<br/>
-	 * <br/>
-	 * This is a hotfix for an issue with the any()-handler in QueryDSL 3.7.0 and earlier as
-	 * described <a href="https://groups.google.com/forum/#!topic/querydsl/uoJ63ZdXPog">here</a>.<br/>
-	 * The error has now been fixed as of
-	 * <a href="https://github.com/querydsl/querydsl/pull/1754">this revision</a>. <br/>
-	 * Once a new version of QueryDSL becomes available, the predicate
-	 * <code>ContributionPredicates.contributionHasDiscourse(discourse)</code>
-	 * can be used again with Spring Data.
+	 * Returns a list of all contributions for a given discourse
 	 * 
-	 * @param discourse
-	 *            the discourse the contributions need to be associated with
-	 * @return a list of Contributions of the given discourse that potentially
-	 *         might be empty
+	 * @param discourse the discourse the contributions need to be associated with
+	 * @return a list of Contributions of the given discourse that potentially might be empty
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
-	public List<Contribution> findAllByDiscourse(Discourse curDiscourse){
-		Assert.notNull(curDiscourse);
-				
-		QDiscourse discourse = QDiscourse.discourse; 
-		QDiscoursePart discoursePart = QDiscoursePart.discoursePart;
-		QContribution contribution = QContribution.contribution;
-		QDiscoursePartContribution dpContrib = QDiscoursePartContribution.discoursePartContribution;
-		QDiscourseToDiscoursePart dDp = QDiscourseToDiscoursePart.discourseToDiscoursePart;
-
-		//TODO we shouldn't explicitly join on the ids, but make use of the query abstraction
-		
-		JPQLQuery query = new JPAQuery(entityManager);
-		List<Contribution> contribs = 
-				query.from(contribution, discourse, discoursePart, dpContrib, dDp)
-				.where(contribution.id.eq(dpContrib.contribution.id)
-				.and(dpContrib.discoursePart.id.eq(discoursePart.id)
-				.and(dDp.discoursePart.id.eq(discoursePart.id)
-				.and(dDp.discourse.eq(curDiscourse))))).list(contribution);				
-		
-		return contribs;			
+	public Iterable<Contribution> findAllByDiscourse(Discourse discourse){
+		Assert.notNull(discourse);
+		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscourse(discourse));			
 	}
+	
 	
 	/**
 	 * Returns a list of all contributions for a given DiscoursePart
