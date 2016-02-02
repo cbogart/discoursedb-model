@@ -169,7 +169,7 @@ public class AnnotationService {
 		Assert.notNull(annotation);
 
 		//the annotations aggregate is a proxy for the entity
-		//all annotation instances are connected to the aggregate which is finally connected to the annotated entity
+		//all annotation instantimeAnnotatableBaseEntityRepo.ces are connected to the aggregate which is finally connected to the annotated entity
 		Annotations annoAggregate = entity.getAnnotations();
 		if (annoAggregate == null) {
 			annoAggregate=annoRepo.save(new Annotations());
@@ -178,6 +178,20 @@ public class AnnotationService {
 		annotation.setAnnotationAggregate(annoAggregate);
 		annotation = annoInstanceRepo.save(annotation);
 		annoAggregate.addAnnotation(annotation);
+	}
+	
+	/**
+	 * Checks whether the given enity has an annotation of the given type.
+	 * 
+	 * @param entity
+	 *            the entity to check for annotations
+	 * @param type
+	 * 			  the annotation type to check for
+	 */
+	public <T extends TimedAnnotatableBaseEntity> boolean hasAnnotationType(T entity, String type) {		
+		Assert.notNull(entity);
+		Assert.hasText(type);		
+		return entity.getAnnotations().getAnnotations().stream().filter(e -> e.getType()!=null).anyMatch(e -> e.getType().getType().equals(type));		
 	}
 	
 	/**
