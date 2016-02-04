@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntity;
+import edu.cmu.cs.lti.discoursedb.core.model.TimedBaseEntity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name="audience_has_group", uniqueConstraints = @UniqueConstraint(columnNames = { "fk_audience", "fk_group" }))
-public class AudienceGroup extends TimedAnnotatableBaseEntity implements Serializable{
+public class AudienceGroup extends TimedBaseEntity implements Serializable{
 	
 	private static final long serialVersionUID = 5232683398940704768L;
 

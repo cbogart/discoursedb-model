@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.springframework.data.rest.core.annotation.RestResource;
+
 import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntity;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Content;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Contribution;
@@ -37,14 +39,17 @@ public class ContributionInteraction extends TimedAnnotatableBaseEntity implemen
 	@Setter(AccessLevel.PRIVATE) 
 	private Long id;
 	
+	@RestResource(rel="userPerformedInteraction",path="userPerformedInteraction")
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_user")
 	private User user;
 	
+	@RestResource(rel="contributionOfInteraction",path="contributionOfInteraction")
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_contribution")
 	private Contribution contribution;
 
+	@RestResource(rel="contentOfInteraction",path="contentOfInteraction")
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_content")
 	private Content content;

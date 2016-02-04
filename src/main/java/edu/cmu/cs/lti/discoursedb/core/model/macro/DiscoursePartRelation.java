@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntity;
+import edu.cmu.cs.lti.discoursedb.core.model.TimedBaseEntity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name="discourse_part_relation")
-public class DiscoursePartRelation extends TimedAnnotatableBaseEntity implements Serializable {
+public class DiscoursePartRelation extends TimedBaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1914547709687781470L;
 

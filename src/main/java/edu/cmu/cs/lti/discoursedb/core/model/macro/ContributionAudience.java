@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntity;
+import edu.cmu.cs.lti.discoursedb.core.model.TimedBaseEntity;
 import edu.cmu.cs.lti.discoursedb.core.model.user.Audience;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name="contribution_has_audience")
-public class ContributionAudience extends TimedAnnotatableBaseEntity implements Serializable{
+public class ContributionAudience extends TimedBaseEntity implements Serializable{
 	
 	private static final long serialVersionUID = -2668707116929576568L;
 
