@@ -32,34 +32,22 @@ import edu.cmu.cs.lti.discoursedb.core.type.ContributionInteractionTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DataSourceTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartInteractionTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.UserRelationTypes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 @Service
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepo;
-
-	@Autowired
-	private DataSourceService dataSourceService;
-
-	@Autowired
-	private UserRelationRepository userRelationRepo;
-
-	@Autowired
-	private UserRelationTypeRepository userRelationTypeRepo;
-
-	@Autowired
-	private ContributionInteractionRepository contribInteractionRepo;
-
-	@Autowired
-	private DiscoursePartInteractionRepository discoursePartInteractionRepo;
-
-	@Autowired
-	private ContributionInteractionTypeRepository contribInteractionTypeRepo;
-
-	@Autowired
-	private DiscoursePartInteractionTypeRepository discoursePartInteractionTypeRepo;
+	private final @NonNull UserRepository userRepo;
+	private final @NonNull DataSourceService dataSourceService;
+	private final @NonNull UserRelationRepository userRelationRepo;
+	private final @NonNull UserRelationTypeRepository userRelationTypeRepo;
+	private final @NonNull ContributionInteractionRepository contribInteractionRepo;
+	private final @NonNull DiscoursePartInteractionRepository discoursePartInteractionRepo;
+	private final @NonNull ContributionInteractionTypeRepository contribInteractionTypeRepo;
+	private final @NonNull DiscoursePartInteractionTypeRepository discoursePartInteractionTypeRepo;
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public Optional<User> findUserByDiscourseAndSourceIdAndSourceType(Discourse discourse, String sourceId,

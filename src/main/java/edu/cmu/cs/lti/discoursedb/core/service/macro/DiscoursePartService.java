@@ -28,31 +28,21 @@ import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscourseToDiscoursePart
 import edu.cmu.cs.lti.discoursedb.core.service.system.DataSourceService;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartRelationTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartTypes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
 @Service
+@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class DiscoursePartService {
 
-	@Autowired
-	private DiscoursePartRepository discoursePartRepo;
-
-	@Autowired
-	private DataSourceService dataSourceService;
-
-	@Autowired
-	private DiscoursePartTypeRepository discoursePartTypeRepo;
-	
-	@Autowired
-	private DiscoursePartRelationRepository discoursePartRelationRepo;
-
-	@Autowired
-	private DiscoursePartRelationTypeRepository discoursePartRelationTypeRepo;
-
-	@Autowired
-	private DiscoursePartContributionRepository discoursePartContributionRepo;
-
-	@Autowired
-	private DiscourseToDiscoursePartRepository discourseToDiscoursePartRepo;
+	private final @NonNull DiscoursePartRepository discoursePartRepo;
+	private final @NonNull DataSourceService dataSourceService;
+	private final @NonNull DiscoursePartTypeRepository discoursePartTypeRepo;
+	private final @NonNull DiscoursePartRelationRepository discoursePartRelationRepo;
+	private final @NonNull DiscoursePartRelationTypeRepository discoursePartRelationTypeRepo;
+	private final @NonNull DiscoursePartContributionRepository discoursePartContributionRepo;
+	private final @NonNull DiscourseToDiscoursePartRepository discourseToDiscoursePartRepo;
 
 	/**
 	 * Retrieves existing or creates a new DiscoursePartType entity with the

@@ -10,13 +10,15 @@ import org.springframework.util.Assert;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Content;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContentRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
 @Service
+@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class ContentService {
 
-	@Autowired
-	private ContentRepository contentRepo;
+	private final @NonNull ContentRepository contentRepo;
 	
 	public Content createContent(){
 		return contentRepo.save(new Content());

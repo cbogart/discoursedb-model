@@ -2,8 +2,6 @@ package edu.cmu.cs.lti.discoursedb.core.service.system;
 
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,16 +14,18 @@ import edu.cmu.cs.lti.discoursedb.core.model.system.DataSourceInstance;
 import edu.cmu.cs.lti.discoursedb.core.model.system.DataSources;
 import edu.cmu.cs.lti.discoursedb.core.repository.system.DataSourceInstanceRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.system.DataSourcesRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 
-@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+@Log4j
 @Service
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class DataSourceService {
-	private static final Logger logger = LogManager.getLogger(DataSourceService.class);	
 
-	@Autowired
-	private DataSourcesRepository dataSourcesRepo;
-	@Autowired
-	private DataSourceInstanceRepository dataSourceInstanceRepo;
+	private final @NonNull DataSourcesRepository dataSourcesRepo;
+	private final @NonNull DataSourceInstanceRepository dataSourceInstanceRepo;
 
 	/**
 	 * Retrieves an existing DataSourceInstance
@@ -97,7 +97,7 @@ public class DataSourceService {
 		String sourceDescriptor = source.getEntitySourceDescriptor();
 		String dataSetName = source.getDatasetName();
 		if(sourceId==null||sourceId.isEmpty()||sourceDescriptor==null||sourceDescriptor.isEmpty()||dataSetName==null||dataSetName.isEmpty()){			
-			logger.error("You need to set sourceId, sourceDescriptor and dataSetName to create a new DataSourceInstance. Proceeding with incomplete DataSourceInstance ...");			
+			log.error("You need to set sourceId, sourceDescriptor and dataSetName to create a new DataSourceInstance. Proceeding with incomplete DataSourceInstance ...");			
 		}
 		Optional<DataSourceInstance> instance = findDataSource(sourceId, sourceDescriptor, dataSetName);
 		if(instance.isPresent()){
@@ -189,7 +189,7 @@ public class DataSourceService {
 		}else if(!existingDataSourceInstance.get().getSourceAggregate().equals(entity.getDataSourceAggregate())){
 			//we tried to create an existing DataSourceInstance but add it to another entity
 			//this is not allowed, a source may only produce a single entity
-			logger.warn("Source already assigned to an existing entity: ("+source.getEntitySourceId()+", "+source.getEntitySourceDescriptor()+", "+source.getDatasetName()+") but must be unique.");				
+			log.warn("Source already assigned to an existing entity: ("+source.getEntitySourceId()+", "+source.getEntitySourceDescriptor()+", "+source.getDatasetName()+") but must be unique.");				
 		}
 	}
 
@@ -226,7 +226,7 @@ public class DataSourceService {
 		}else if(!existingDataSourceInstance.get().getSourceAggregate().equals(entity.getDataSourceAggregate())){
 			//we tried to create an existing DataSourceInstance but add it to another entity
 			//this is not allowed, a source may only produce a single entity
-			logger.error("Source already assigned to an existing entity: ("+source.getEntitySourceId()+", "+source.getEntitySourceDescriptor()+", "+source.getDatasetName()+") but must be unique.");				
+			log.error("Source already assigned to an existing entity: ("+source.getEntitySourceId()+", "+source.getEntitySourceDescriptor()+", "+source.getDatasetName()+") but must be unique.");				
 		}
 	}
 	

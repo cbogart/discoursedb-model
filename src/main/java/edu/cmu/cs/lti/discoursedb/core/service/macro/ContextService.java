@@ -16,17 +16,17 @@ import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContextRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContextTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContributionContextRepository;
 import edu.cmu.cs.lti.discoursedb.core.type.ContextTypes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
 @Service
+@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class ContextService {
 
-	@Autowired
-	private ContextRepository contextRepo;
-	@Autowired
-	private ContextTypeRepository contextTypeRepo;
-	@Autowired
-	private ContributionContextRepository contributionContextRepo;
+	private final @NonNull ContextRepository contextRepo;
+	private final @NonNull ContextTypeRepository contextTypeRepo;
+	private final @NonNull ContributionContextRepository contributionContextRepo;
 	
 	/**
 	 * Retrieves existing or creates a new ContextType entity with the
