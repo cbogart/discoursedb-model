@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,7 +37,8 @@ public class ContributionService {
 	@Autowired private ContributionTypeRepository contribTypeRepo;
 	@Autowired private DiscourseRelationTypeRepository discRelationTypeRepo;
 	@Autowired private DiscourseRelationRepository discourseRelationRepo;
-
+	@PersistenceContext private EntityManager entityManager; 
+	
 	/**
 	 * Retrieves existing or creates a new ContributionType entity with the
 	 * provided type. It then creates a new empty Contribution entity and
@@ -128,6 +132,7 @@ public class ContributionService {
 		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscourse(discourse));			
 	}
 	
+	
 	/**
 	 * Returns a list of all contributions for a given DiscoursePart
 	 * 
@@ -137,7 +142,6 @@ public class ContributionService {
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Iterable<Contribution> findAllByDiscoursePart(DiscoursePart discoursePart){
 		Assert.notNull(discoursePart);
-
 		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscoursePart(discoursePart));			
 	}
 	
@@ -216,5 +220,21 @@ public class ContributionService {
 		return discourseRelationRepo.save(newRelation);
 	}
 	
-
+	/**
+	 * Returns a Contribution given it's primary key
+	 * 
+	 * @param Long id the primary key of the contribution
+	 * @return an Optional that contains the contribution if it exists
+	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
+	public Optional<Contribution> findOne(Long id){
+		Assert.notNull(id);
+		Contribution contrib = contributionRepo.findOne(id);
+		if(contrib==null){
+			return Optional.empty();
+		}else{
+			return Optional.of(contrib);
+		}
+		
+	}
 }

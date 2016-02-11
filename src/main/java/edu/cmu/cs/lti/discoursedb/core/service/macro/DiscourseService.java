@@ -43,6 +43,17 @@ public class DiscourseService {
 		}
 		return curDiscourse;
 	}
+	
+	/**
+	 * Returns a Discourse object with the given name if it exists 
+	 * 
+	 * @param name name of the requested discourse
+	 * @return an Optional containing the Discourse object with the given name if it exists 
+	 */
+	public Optional<Discourse> findOne(String name) {
+		Assert.hasText(name);
+		return discourseRepository.findOneByName(name);
+	}
 
 	/**
 	 * Finds one DiscoursePart of the given type, with the given name and associated with the given discourse
