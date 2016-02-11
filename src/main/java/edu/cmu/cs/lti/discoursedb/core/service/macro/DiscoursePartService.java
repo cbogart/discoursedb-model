@@ -25,6 +25,7 @@ import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscoursePartRelationTyp
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscoursePartRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscoursePartTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscourseToDiscoursePartRepository;
+import edu.cmu.cs.lti.discoursedb.core.service.user.UserPredicates;
 import edu.cmu.cs.lti.discoursedb.core.service.system.DataSourceService;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartRelationTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartTypes;
@@ -363,6 +364,20 @@ public class DiscoursePartService {
 	}
 	
 	/**
+	 * Retrieves DiscoursePart by name
+	 * 
+	 * @param discoursePartName the name of the discourse part to search for
+	 * @return an optional DiscoursePart, depending on if it was found or not 
+	 */
+	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
+	public Optional<DiscoursePart> findOneDiscoursePartByName(String discoursePartName) {
+		Assert.notNull(discoursePartName);
+		
+		return Optional.ofNullable(discoursePartRepo.findOne(
+				DiscoursePartPredicates.discoursePartHasName(discoursePartName)));
+	}
+	
+    /**
 	 * Retrieves a discourse part that has a source which exactly matches the given DataSource parameters.
 	 * 
 	 * @param entitySourceId the source id of the contribution  

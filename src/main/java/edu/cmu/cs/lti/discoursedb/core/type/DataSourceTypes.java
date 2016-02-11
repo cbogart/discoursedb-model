@@ -24,6 +24,14 @@ public enum DataSourceTypes {
 	 */
 	TAGS,
 	/**
+	 * Github dataset
+	 */
+	GITHUB,
+	/**
+	 * Google Groups dataset
+	 */
+	GOOGLE_GROUPS,
+	/**
 	 * A Bazaar chat dataset
 	 */
 	BAZAAR,
@@ -35,7 +43,6 @@ public enum DataSourceTypes {
 	 * A Piazza dataset
 	 */
 	PIAZZA
-
 
 
 }
