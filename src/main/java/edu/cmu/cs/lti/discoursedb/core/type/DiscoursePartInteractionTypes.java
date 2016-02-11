@@ -23,13 +23,25 @@ public enum DiscoursePartInteractionTypes {
 	 */
 	UNREADY,
     /**
-	 * Watch a repository (Github)
+	 * Watch a collaboration (e.g. a Github repository)
 	 */
 	WATCH,
 	/**
-	 * Unwatch a repository (Github)
+	 * Unwatch a collaboration (e.g. a Github repository)
 	 */
-	UNWATCH
+	UNWATCH,
+	/**
+	 * Create a collaboration (e.g. a Github repository)
+	 */
+	CREATE,
+	/**
+	 * Delete a collaboration (e.g. a Github repository)
+	 */
+	DELETE, 
+	/**
+	 * Make a personal copy of a collaboration (e.g. a Github repository)
+	 */
+	FORK_FROM
 
 }
 
