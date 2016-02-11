@@ -17,6 +17,14 @@ public enum DiscoursePartInteractionTypes {
 	/**
 	 * A user indicates they are ready to move on in a conversation (e.g. in an agent supported chat)
 	 */
-	READY
+	READY,
+	/**
+	 * Watch a repository (Github)
+	 */
+	WATCH,
+	/**
+	 * Unwatch a repository (Github)
+	 */
+	UNWATCH
 }
 
