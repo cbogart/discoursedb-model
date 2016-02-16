@@ -1,7 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.model.user;
 
-import java.io.Serializable;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.hateoas.Identifiable;
 
 import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntity;
 import lombok.AccessLevel;
@@ -25,9 +24,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name="user_relation")
-public class UserRelation extends TimedAnnotatableBaseEntity implements Serializable {
-
-	private static final long serialVersionUID = -5267036520925282560L;
+public class UserRelation extends TimedAnnotatableBaseEntity implements Identifiable<Long> {
 
 	@Id
 	@Column(name="id_user_relation", nullable=false)
