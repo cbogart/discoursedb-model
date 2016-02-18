@@ -14,59 +14,38 @@ import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscoursePart;
 import edu.cmu.cs.lti.discoursedb.core.model.system.DataSourceInstance;
 import edu.cmu.cs.lti.discoursedb.core.model.user.ContributionInteraction;
-import edu.cmu.cs.lti.discoursedb.core.model.user.ContributionInteractionType;
 import edu.cmu.cs.lti.discoursedb.core.model.user.DiscoursePartInteraction;
-import edu.cmu.cs.lti.discoursedb.core.model.user.DiscoursePartInteractionType;
 import edu.cmu.cs.lti.discoursedb.core.model.user.User;
 import edu.cmu.cs.lti.discoursedb.core.model.user.UserRelation;
-import edu.cmu.cs.lti.discoursedb.core.model.user.UserRelationType;
 import edu.cmu.cs.lti.discoursedb.core.repository.user.ContributionInteractionRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.user.ContributionInteractionTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.user.DiscoursePartInteractionRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.user.DiscoursePartInteractionTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.user.UserRelationRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.user.UserRelationTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.user.UserRepository;
 import edu.cmu.cs.lti.discoursedb.core.service.system.DataSourceService;
 import edu.cmu.cs.lti.discoursedb.core.type.ContributionInteractionTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DataSourceTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartInteractionTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.UserRelationTypes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 @Service
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepo;
-
-	@Autowired
-	private DataSourceService dataSourceService;
-
-	@Autowired
-	private UserRelationRepository userRelationRepo;
-
-	@Autowired
-	private UserRelationTypeRepository userRelationTypeRepo;
-
-	@Autowired
-	private ContributionInteractionRepository contribInteractionRepo;
-
-	@Autowired
-	private DiscoursePartInteractionRepository discoursePartInteractionRepo;
-
-	@Autowired
-	private ContributionInteractionTypeRepository contribInteractionTypeRepo;
-
-	@Autowired
-	private DiscoursePartInteractionTypeRepository discoursePartInteractionTypeRepo;
+	private final @NonNull UserRepository userRepo;
+	private final @NonNull DataSourceService dataSourceService;
+	private final @NonNull UserRelationRepository userRelationRepo;
+	private final @NonNull ContributionInteractionRepository contribInteractionRepo;
+	private final @NonNull DiscoursePartInteractionRepository discoursePartInteractionRepo;
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public Optional<User> findUserByDiscourseAndSourceIdAndSourceType(Discourse discourse, String sourceId,
 			DataSourceTypes type) {
-		Assert.notNull(discourse);
-		Assert.hasText(sourceId);
-		Assert.notNull(type);
+		Assert.notNull(discourse, "The discourse cannot be null.");
+		Assert.hasText(sourceId, "The sourceId cannot be empty.");
+		Assert.notNull(type, "You have to provide a datasource type.");
 
 		return Optional.ofNullable(userRepo.findOne(UserPredicates.hasDiscourse(discourse)
 				.and(UserPredicates.hasSourceId(sourceId)).and(UserPredicates.hasDataSourceType(type))));
@@ -75,9 +54,9 @@ public class UserService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public Optional<User> findUserByDiscourseAndSourceIdAndDataSet(Discourse discourse, String sourceId,
 			String dataSetName) {
-		Assert.notNull(discourse);
-		Assert.hasText(sourceId);
-		Assert.hasText(dataSetName);
+		Assert.notNull(discourse, "The discourse cannot be null.");
+		Assert.hasText(sourceId, "The sourceId cannot be empty.");
+		Assert.hasText(dataSetName, "The dataset name cannot be empty.");
 
 		return Optional.ofNullable(userRepo.findOne(UserPredicates.hasDiscourse(discourse)
 				.and(UserPredicates.hasSourceId(sourceId)).and(UserPredicates.hasDataSet(dataSetName))));
@@ -85,8 +64,8 @@ public class UserService {
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public Optional<User> findUserByDiscourseAndSourceId(Discourse discourse, String sourceId) {
-		Assert.notNull(discourse);
-		Assert.hasText(sourceId);
+		Assert.notNull(discourse, "The discourse cannot be null.");
+		Assert.hasText(sourceId, "The sourceId cannot be empty.");
 
 		return Optional.ofNullable(
 				userRepo.findOne(UserPredicates.hasDiscourse(discourse).and(UserPredicates.hasSourceId(sourceId))));
@@ -94,8 +73,8 @@ public class UserService {
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public Optional<User> findUserBySourceIdAndUsername(String sourceId, String username) {
-		Assert.hasText(sourceId);
-		Assert.hasText(username);
+		Assert.hasText(sourceId, "The sourceId cannot be empty.");
+		Assert.hasText(username, "The username cannot be empty.");
 
 		return Optional.ofNullable(
 				userRepo.findOne(UserPredicates.hasSourceId(sourceId).and(UserPredicates.hasUserName(username))));
@@ -103,7 +82,7 @@ public class UserService {
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public Iterable<User> findUsersBySourceId(String sourceId) {
-		Assert.hasText(sourceId);
+		Assert.hasText(sourceId, "The sourceId cannot be empty.");
 
 		return userRepo.findAll(UserPredicates.hasSourceId(sourceId));
 	}
@@ -121,20 +100,17 @@ public class UserService {
 	 *         newly created
 	 */
 	public User createOrGetUser(Discourse discourse, String username) {
-		Assert.notNull(discourse);
-		Assert.hasText(username);
+		Assert.notNull(discourse, "Discourse cannot be null.");
+		Assert.hasText(username, "Username cannot be empty.");
 
-		Optional<User> existingUser = Optional.ofNullable(
-				userRepo.findOne(UserPredicates.hasDiscourse(discourse).and(UserPredicates.hasUserName(username))));
-		User curUser;
-		if (existingUser.isPresent()) {
-			return existingUser.get();
-		} else {
-			curUser = new User(discourse);
-			curUser.setUsername(username);
-			return save(curUser);
+		return Optional.ofNullable(userRepo.findOne(UserPredicates.hasDiscourse(discourse).and(UserPredicates.hasUserName(username)))).
+				orElseGet(() -> {
+					User curUser = new User(discourse);
+					curUser.setUsername(username);
+					return save(curUser);
+					}
+				);
 		}
-	}
 
 	/**
 	 * Returns a User object with the given source id and username if it exists
@@ -153,25 +129,22 @@ public class UserService {
 	 */
 	public User createOrGetUser(Discourse discourse, String username, String sourceId, String sourceIdDescriptor,
 			DataSourceTypes dataSourceType, String dataSetName) {
-		Assert.notNull(discourse);
-		Assert.hasText(username);
-		Assert.hasText(sourceId);
-		Assert.hasText(sourceIdDescriptor);
-		Assert.notNull(dataSourceType);
-		Assert.hasText(dataSetName);
+		Assert.notNull(discourse, "Discourse cannot be null");
+		Assert.hasText(username, "Username cannot be empty.");
+		Assert.hasText(sourceId, "SourceId cannot be empty.");
+		Assert.hasText(sourceIdDescriptor, "SourceId descriptor cannot be empty.");
+		Assert.notNull(dataSourceType, "You have to provide a datasource type.");
+		Assert.hasText(dataSetName, "Dataset name cannot be empty.");
 
-		Optional<User> existingUser = findUserByDiscourseAndSourceIdAndDataSet(discourse, sourceId, dataSetName);
-		User curUser;
-		if (existingUser.isPresent()) {
-			curUser = existingUser.get();
-		} else {
-			curUser = new User(discourse);
+		return findUserByDiscourseAndSourceIdAndDataSet(discourse, sourceId, dataSetName).orElseGet(()->{
+			User curUser = new User(discourse);
 			curUser.setUsername(username);
 			curUser = userRepo.save(curUser);
 			dataSourceService.addSource(curUser,
 					new DataSourceInstance(sourceId, sourceIdDescriptor, dataSourceType, dataSetName));
-		}
-		return curUser;
+			return curUser;
+			}
+		);
 	}
 
 	/**
@@ -192,34 +165,20 @@ public class UserService {
 	 */
 	public ContributionInteraction createContributionInteraction(User user, Contribution contrib,
 			ContributionInteractionTypes type) {
-		Assert.notNull(user);
-		Assert.notNull(contrib);
-		Assert.notNull(type);
-
-		// Retrieve type or create if it doesn't exist in db
-		ContributionInteractionType contribInteractionType = null;
-		Optional<ContributionInteractionType> existingContribInteractionType = contribInteractionTypeRepo
-				.findOneByType(type.name());
-		if (existingContribInteractionType.isPresent()) {
-			contribInteractionType = existingContribInteractionType.get();
-		} else {
-			contribInteractionType = new ContributionInteractionType();
-			contribInteractionType.setType(type.name());
-			contribInteractionTypeRepo.save(contribInteractionType);
-		}
+		Assert.notNull(user, "User cannot be null.");
+		Assert.notNull(contrib, "Contribution cannot be null.");
+		Assert.notNull(type, "You have to provive a ContributionInteraction type.");
 
 		// Retrieve ContributionInteraction or create if it doesn't exist in db
-		Optional<ContributionInteraction> existingContribInteraction = contribInteractionRepo
-				.findOneByUserAndContributionAndType(user, contrib, contribInteractionType);
-		if (existingContribInteraction.isPresent()) {
-			return existingContribInteraction.get();
-		} else {
-			ContributionInteraction contribInteraction = new ContributionInteraction();
-			contribInteraction.setContribution(contrib);
-			contribInteraction.setUser(user);
-			contribInteraction.setType(contribInteractionType);
-			return contribInteractionRepo.save(contribInteraction);
-		}
+		return contribInteractionRepo
+				.findOneByUserAndContributionAndType(user, contrib, type.name()).orElseGet(()->{
+					ContributionInteraction contribInteraction = new ContributionInteraction();
+					contribInteraction.setContribution(contrib);
+					contribInteraction.setUser(user);
+					contribInteraction.setType(type.name());
+					return contribInteractionRepo.save(contribInteraction);
+					}
+				);
 	}
 
 	/**
@@ -238,34 +197,20 @@ public class UserService {
 	 */
 	public DiscoursePartInteraction createDiscoursePartInteraction(User user, DiscoursePart dp,
 			DiscoursePartInteractionTypes type) {
-		Assert.notNull(user);
-		Assert.notNull(dp);
-		Assert.notNull(type);
-
-		// Retrieve type or create if it doesn't exist in db
-		DiscoursePartInteractionType dpInteractionType = null;
-		Optional<DiscoursePartInteractionType> existingDpInteractionType = discoursePartInteractionTypeRepo
-				.findOneByType(type.name());
-		if (existingDpInteractionType.isPresent()) {
-			dpInteractionType = existingDpInteractionType.get();
-		} else {
-			dpInteractionType = new DiscoursePartInteractionType();
-			dpInteractionType.setType(type.name());
-			discoursePartInteractionTypeRepo.save(dpInteractionType);
-		}
+		Assert.notNull(user, "User cannot be null.");
+		Assert.notNull(dp, "DiscoursePart cannot be null.");
+		Assert.notNull(type, "You have to provide a DiscoursePartInteraction type.");
 
 		// Retrieve ContributionInteraction or create if it doesn't exist in db
-		Optional<DiscoursePartInteraction> existingDPInteraction = discoursePartInteractionRepo
-				.findOneByUserAndDiscoursePartAndType(user, dp, dpInteractionType);
-		if (existingDPInteraction.isPresent()) {
-			return existingDPInteraction.get();
-		} else {
-			DiscoursePartInteraction dpInteraction = new DiscoursePartInteraction();
-			dpInteraction.setDiscoursePart(dp);
-			dpInteraction.setUser(user);
-			dpInteraction.setType(dpInteractionType);
-			return discoursePartInteractionRepo.save(dpInteraction);
-		}
+		return discoursePartInteractionRepo
+				.findOneByUserAndDiscoursePartAndType(user, dp, type.name()).orElseGet(()->{
+					DiscoursePartInteraction dpInteraction = new DiscoursePartInteraction();
+					dpInteraction.setDiscoursePart(dp);
+					dpInteraction.setUser(user);
+					dpInteraction.setType(type.name());
+					return discoursePartInteractionRepo.save(dpInteraction);
+					}
+				);
 	}
 
 	/**
@@ -283,33 +228,20 @@ public class UserService {
 	 *         returned.
 	 */
 	public UserRelation createUserRelation(User sourceUser, User targetUser, UserRelationTypes type) {
-		Assert.notNull(sourceUser);
-		Assert.notNull(targetUser);
-		Assert.notNull(type);
-
-		// Retrieve type or create if it doesn't exist in db
-		UserRelationType userRelationType = null;
-		Optional<UserRelationType> existingUserRelationType = userRelationTypeRepo.findOneByType(type.name());
-		if (existingUserRelationType.isPresent()) {
-			userRelationType = existingUserRelationType.get();
-		} else {
-			userRelationType = new UserRelationType();
-			userRelationType.setType(type.name());
-			userRelationTypeRepo.save(userRelationType);
-		}
+		Assert.notNull(sourceUser, "Source user cannot be null.");
+		Assert.notNull(targetUser, "Target user cannot be null.");
+		Assert.notNull(type, "Type cannot be null.");
 
 		// Retrieve UserRelation or create if it doesn't exist in db
-		Optional<UserRelation> existingUserRelation = userRelationRepo.findOneBySourceAndTargetAndType(sourceUser,
-				targetUser, userRelationType);
-		if (existingUserRelation.isPresent()) {
-			return existingUserRelation.get();
-		} else {
-			UserRelation userRelation = new UserRelation();
-			userRelation.setSource(sourceUser);
-			userRelation.setTarget(targetUser);
-			userRelation.setType(userRelationType);
-			return userRelationRepo.save(userRelation);
-		}
+		return userRelationRepo.findOneBySourceAndTargetAndType(sourceUser,
+				targetUser, type.name()).orElseGet(()->{
+					UserRelation userRelation = new UserRelation();
+					userRelation.setSource(sourceUser);
+					userRelation.setTarget(targetUser);
+					userRelation.setType(type.name());
+					return userRelationRepo.save(userRelation);
+					}
+				);
 	}
 
 	/**
@@ -331,7 +263,7 @@ public class UserService {
 	 * @return the user with updated or unchanged realname
 	 */
 	public User setRealname(User user, String firstName, String lastName) {
-		Assert.notNull(user);
+		Assert.notNull(user, "User cannot be null.");
 
 		if (firstName == null)
 			firstName = "";
@@ -364,7 +296,7 @@ public class UserService {
 	 * @return the user entity after the save process
 	 */
 	public User save(User user) {
-		Assert.notNull(user);
+		Assert.notNull(user, "User cannot be null.");
 
 		return userRepo.save(user);
 	}
@@ -377,7 +309,7 @@ public class UserService {
 	 *            the user entity to delete
 	 */
 	public void delete(User user) {
-		Assert.notNull(user);
+		Assert.notNull(user, "User cannot be null.");
 
 		for (Discourse d : user.getDiscourses()) {
 			user.removeDiscourse(d);
@@ -395,7 +327,7 @@ public class UserService {
 	 * 
 	 */
 	public List<User> findUserByUsername(String username) {
-		Assert.hasText(username);
+		Assert.hasText(username, "Username cannot be empty.");
 		return userRepo.findAllByUsername(username);
 	}
 

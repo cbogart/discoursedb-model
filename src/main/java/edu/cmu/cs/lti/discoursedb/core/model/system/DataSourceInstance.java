@@ -1,7 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.model.system;
 
-import java.io.Serializable;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import edu.cmu.cs.lti.discoursedb.core.model.UntimedBaseEntity;
+import org.springframework.hateoas.Identifiable;
+
+import edu.cmu.cs.lti.discoursedb.core.model.BaseEntity;
 import edu.cmu.cs.lti.discoursedb.core.type.DataSourceTypes;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -33,9 +33,7 @@ import lombok.Setter;
 				@Index(name = "sourceId_descriptor_Index", columnList = "entity_source_id,entity_source_descriptor"),
 				@Index(name = "sourceDescriptorIndex", columnList = "entity_source_descriptor"),
 				@Index(name = "sourceIdIndex", columnList = "entity_source_id") })
-public class DataSourceInstance extends UntimedBaseEntity implements Serializable{
-
-	private static final long serialVersionUID = -6293065846688380816L;
+public class DataSourceInstance extends BaseEntity implements Identifiable<Long> {
 
 	@Id
 	@Column(name="id_data_source_instance", nullable=false)
@@ -58,7 +56,7 @@ public class DataSourceInstance extends UntimedBaseEntity implements Serializabl
 	
 	@ManyToOne(cascade=CascadeType.ALL) 
 	@JoinColumn(name = "fk_sources")
-	private DataSources sourceAggregate;
+	private DataSourceAggregate sourceAggregate;
 	
 	/**
 	 * Creates a new DataSourceInstance for the entity with the source id

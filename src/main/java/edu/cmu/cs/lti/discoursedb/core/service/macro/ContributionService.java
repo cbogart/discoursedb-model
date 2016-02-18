@@ -1,6 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.service.macro;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,30 +13,26 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Contribution;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.ContributionType;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscoursePart;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscourseRelation;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscourseRelationType;
-import edu.cmu.cs.lti.discoursedb.core.model.system.DataSourceInstance;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContributionRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContributionTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscourseRelationRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscourseRelationTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.service.system.DataSourceService;
 import edu.cmu.cs.lti.discoursedb.core.type.ContributionTypes;
 import edu.cmu.cs.lti.discoursedb.core.type.DiscourseRelationTypes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
 @Service
+@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class ContributionService {
 
-	@Autowired private ContributionRepository contributionRepo;
-	@Autowired private DataSourceService dataSourceService;	
-	@Autowired private ContributionTypeRepository contribTypeRepo;
-	@Autowired private DiscourseRelationTypeRepository discRelationTypeRepo;
-	@Autowired private DiscourseRelationRepository discourseRelationRepo;
-	@PersistenceContext private EntityManager entityManager; 
+	private final @NonNull ContributionRepository contributionRepo;
+	private final @NonNull DataSourceService dataSourceService;	
+	private final @NonNull DiscourseRelationRepository discourseRelationRepo;
+	private final @NonNull @PersistenceContext EntityManager entityManager; 
 	
 	/**
 	 * Retrieves existing or creates a new ContributionType entity with the
@@ -52,19 +47,10 @@ public class ContributionService {
 	 *         connected with its requested type
 	 */
 	public Contribution createTypedContribution(ContributionTypes type){
-		Assert.notNull(type);
-		Optional<ContributionType> optContribType = contribTypeRepo.findOneByType(type.name());
-		ContributionType contribType = null;
-		if(optContribType.isPresent()){
-			contribType = optContribType.get();
-		}else{
-			contribType = new ContributionType();
-			contribType.setType(type.name());
-			contribType= contribTypeRepo.save(contribType);
-		}
-
+		Assert.notNull(type, "Contribution type cannot be null.");
+		
 		Contribution contrib = new Contribution();
-		contrib.setType(contribType);
+		contrib.setType(type.name());
 		return contributionRepo.save(contrib);
 	}		
 	
@@ -75,7 +61,7 @@ public class ContributionService {
 	 * @return the possibly altered entity after the save process 
 	 */
 	public Contribution save(Contribution contrib){
-		Assert.notNull(contrib);
+		Assert.notNull(contrib, "Contribution to save cannot be null.");
 		return contributionRepo.save(contrib);
 	}
 
@@ -90,17 +76,13 @@ public class ContributionService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Optional<Contribution> findOneByDataSource(String entitySourceId, String entitySourceDescriptor, String dataSetName) {
-		Assert.hasText(entitySourceId);
-		Assert.hasText(entitySourceDescriptor);
-		Assert.hasText(dataSetName);
+		Assert.hasText(entitySourceId, "Entity source id cannot be empty.");
+		Assert.hasText(entitySourceDescriptor, "Entity source descriptor cannot be empty");
+		Assert.hasText(dataSetName, "Dataset name cannot be empty.");
 
-		Optional<DataSourceInstance> dataSource = dataSourceService.findDataSource(entitySourceId, entitySourceDescriptor, dataSetName);
-		if(dataSource.isPresent()){
-			return Optional.ofNullable(contributionRepo.findOne(
-					ContributionPredicates.contributionHasDataSource(dataSource.get())));			
-		}else{
-			return Optional.empty();
-		}
+		return dataSourceService.findDataSource(entitySourceId, entitySourceDescriptor, dataSetName)
+				.map(s -> Optional.ofNullable(contributionRepo.findOne(ContributionPredicates.contributionHasDataSource(s))))
+				.orElse(Optional.empty());
 	}
 	
 	/**
@@ -111,13 +93,8 @@ public class ContributionService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public List<Contribution> findAllByType(ContributionTypes type){
-		Assert.notNull(type);
-		Optional<ContributionType> existingType = contribTypeRepo.findOneByType(type.name());
-		if(existingType.isPresent()){
-			return contributionRepo.findAllByType(existingType.get());			
-		}else{
-			return new ArrayList<Contribution>(0);
-		}
+		Assert.notNull(type, "Type cannot be null.");		
+		return contributionRepo.findAllByType(type.name());
 	}
 
 	/**
@@ -128,7 +105,7 @@ public class ContributionService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Iterable<Contribution> findAllByDiscourse(Discourse discourse){
-		Assert.notNull(discourse);
+		Assert.notNull(discourse, "Discourse cannot be null.");
 		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscourse(discourse));			
 	}
 	
@@ -141,7 +118,7 @@ public class ContributionService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Iterable<Contribution> findAllByDiscoursePart(DiscoursePart discoursePart){
-		Assert.notNull(discoursePart);
+		Assert.notNull(discoursePart, "DiscoursePart cannot be null.");
 		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscoursePart(discoursePart));			
 	}
 	
@@ -154,16 +131,10 @@ public class ContributionService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Iterable<Contribution> findAllByType(Discourse discourse, ContributionTypes type){
-		Assert.notNull(discourse);
-		Assert.notNull(type);
+		Assert.notNull(discourse, "Discourse cannot be null");
+		Assert.notNull(type, "Type cannot be null");
 		
-		Optional<ContributionType> existingType = contribTypeRepo.findOneByType(type.name());
-		if(existingType.isPresent()){
-			return contributionRepo.findAll(
-					ContributionPredicates.contributionHasDiscourse(discourse).and(ContributionPredicates.contributionHasType(type)));			
-		}else{
-			return new ArrayList<Contribution>(0);
-		}
+		return contributionRepo.findAll(ContributionPredicates.contributionHasDiscourse(discourse).and(ContributionPredicates.contributionHasType(type)));			
 	}
 	
 	/**
@@ -191,33 +162,22 @@ public class ContributionService {
 	 * @return a DiscourseRelation between the two provided contributions with the given type that has already been saved to the database 
 	 */
 	public DiscourseRelation createDiscourseRelation(Contribution sourceContribution, Contribution targetContribution, DiscourseRelationTypes type) {
-		Assert.notNull(sourceContribution);
-		Assert.notNull(targetContribution);
-		Assert.notNull(type);
-
-		//Retrieve type or create if it doesn't exist in db
-		DiscourseRelationType discourseRelationType = null;
-		Optional<DiscourseRelationType> existingDiscourseRelationType = discRelationTypeRepo.findOneByType(type.name());
-		if(existingDiscourseRelationType.isPresent()){
-			discourseRelationType=existingDiscourseRelationType.get();
-		}else{
-			discourseRelationType = new DiscourseRelationType();
-			discourseRelationType.setType(type.name());
-			discRelationTypeRepo.save(discourseRelationType);			
-		}
-		
-		//check if a relation of the given type already exists between the two contributions.
-		Optional<DiscourseRelation> existingRelation = discourseRelationRepo.findOneBySourceAndTargetAndType(sourceContribution, targetContribution, discourseRelationType);
-		if(existingRelation.isPresent()){
-			return existingRelation.get();
-		}
-		
-		//create, save and return the new relation
-		DiscourseRelation newRelation = new DiscourseRelation();
-		newRelation.setSource(sourceContribution);
-		newRelation.setTarget(targetContribution);
-		newRelation.setType(discourseRelationType);
-		return discourseRelationRepo.save(newRelation);
+		Assert.notNull(sourceContribution, "Source contribution cannot be null.");
+		Assert.notNull(targetContribution, "Target contribution cannot be null.");
+		Assert.notNull(type, "Relation type cannot be null.");
+								
+		//check if a relation of the given type already exists between the two contributions
+		//if so, return it. if not, create new relation, configure it and return it.
+		return discourseRelationRepo
+				.findOneBySourceAndTargetAndType(sourceContribution, targetContribution, type.name())
+				.orElseGet(() -> {
+					DiscourseRelation newRelation = new DiscourseRelation();
+					newRelation.setSource(sourceContribution);
+					newRelation.setTarget(targetContribution);
+					newRelation.setType(type.name());
+					return discourseRelationRepo.save(newRelation);
+					}
+				);
 	}
 	
 	/**
@@ -228,13 +188,8 @@ public class ContributionService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Optional<Contribution> findOne(Long id){
-		Assert.notNull(id);
+		Assert.notNull(id, "ID cannot be null.");
 		Contribution contrib = contributionRepo.findOne(id);
-		if(contrib==null){
-			return Optional.empty();
-		}else{
-			return Optional.of(contrib);
-		}
-		
+		return contrib==null?Optional.empty():Optional.of(contrib);		
 	}
 }

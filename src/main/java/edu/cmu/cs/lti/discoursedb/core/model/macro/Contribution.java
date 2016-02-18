@@ -1,6 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.model.macro;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,14 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.rest.core.annotation.Description;
+import org.springframework.hateoas.Identifiable;
 
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntityWithSource;
+import edu.cmu.cs.lti.discoursedb.core.model.TypedTimedAnnotatableSourcedBE;
 import edu.cmu.cs.lti.discoursedb.core.model.user.ContributionInteraction;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -51,9 +50,7 @@ import lombok.ToString;
 @Entity
 @Table(name="contribution")
 @Description("A contribution.")
-public class Contribution extends TimedAnnotatableBaseEntityWithSource implements Serializable {
-
-	private static final long serialVersionUID = -2489956863731652149L;
+public class Contribution extends TypedTimedAnnotatableSourcedBE implements Identifiable<Long>{
 
 	@Id
 	@Column(name="id_contribution", nullable=false)
@@ -79,11 +76,6 @@ public class Contribution extends TimedAnnotatableBaseEntityWithSource implement
 	@Column(name="downvotes")
 	@Description("The number of downvotes for this contribution.")
 	private int downvotes;
-
-	@ManyToOne(cascade=CascadeType.ALL) 
-	@JoinColumn(name = "fk_contribution_type")
-	@Description("The type of this contribution.")
-	private ContributionType type;
 	
     @OneToMany(mappedBy = "contribution")
 	@Description("A set of relations that associate this contribution with one or more DiscoursePart entities.")

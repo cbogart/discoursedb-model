@@ -3,9 +3,9 @@ package edu.cmu.cs.lti.discoursedb.core.service.macro;
 import com.mysema.query.types.expr.BooleanExpression;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscoursePartType;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.QDiscoursePart;
 import edu.cmu.cs.lti.discoursedb.core.model.system.DataSourceInstance;
+import edu.cmu.cs.lti.discoursedb.core.type.DiscoursePartTypes;
 
 public final class DiscoursePartPredicates {
 
@@ -28,11 +28,11 @@ public final class DiscoursePartPredicates {
 		}
 	}
 
-	public static BooleanExpression discoursePartHasType(DiscoursePartType type) {
+	public static BooleanExpression discoursePartHasType(DiscoursePartTypes type) {
 		if (type == null) {
 			return QDiscoursePart.discoursePart.isNull();
 		} else {
-			return QDiscoursePart.discoursePart.type.eq(type);
+			return QDiscoursePart.discoursePart.type.eq(type.name());
 		}
 	}
 	

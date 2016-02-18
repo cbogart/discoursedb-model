@@ -1,6 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.model.system;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import edu.cmu.cs.lti.discoursedb.core.model.UntimedBaseEntity;
+import org.springframework.hateoas.Identifiable;
+
+import edu.cmu.cs.lti.discoursedb.core.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,10 +30,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=true, exclude={"sources"})
 @ToString(callSuper=true, exclude={"sources"})
 @Entity
-@Table(name="data_sources")
-public class DataSources extends UntimedBaseEntity implements Serializable{
-
-	private static final long serialVersionUID = -6582983183583393074L;
+@Table(name="data_source_aggregate")
+public class DataSourceAggregate extends BaseEntity implements Identifiable<Long> {
 
 	@Id
 	@Column(name="id_data_sources", nullable=false)

@@ -1,6 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.model.annotation;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,10 +15,11 @@ import javax.persistence.Table;
 
 import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.hateoas.Identifiable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import edu.cmu.cs.lti.discoursedb.core.model.UntimedBaseEntity;
+import edu.cmu.cs.lti.discoursedb.core.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,11 +30,9 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=true, exclude={"annotations"})
 @ToString(callSuper=true, exclude={"annotations"})
 @Entity
-@Table(name="annotation")
+@Table(name="annotation_aggregate")
 @Description("An aggregate that links an entity with a set of annotation instances. Each annotatable aggregate can have one aggregate and each aggregate can link to multiple annotation instances.")
-public class Annotations extends UntimedBaseEntity implements Serializable{
-
-	private static final long serialVersionUID = -4654984158138436217L;
+public class AnnotationAggregate extends BaseEntity  implements Identifiable<Long>{
 
 	@Id
 	@Column(name="id_annotation", nullable=false)

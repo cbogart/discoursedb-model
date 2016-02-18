@@ -40,7 +40,7 @@ public final class ContributionPredicates {
 		if (type == null) {
 			return QContribution.contribution.isNull();
 		} else {
-			return QContribution.contribution.type.type.eq(type.name());
+			return QContribution.contribution.type.eq(type.name());
 		}
 	}
 

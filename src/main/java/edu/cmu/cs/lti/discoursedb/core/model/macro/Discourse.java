@@ -1,6 +1,5 @@
 package edu.cmu.cs.lti.discoursedb.core.model.macro;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,9 +14,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.hateoas.Identifiable;
 import org.springframework.util.Assert;
 
-import edu.cmu.cs.lti.discoursedb.core.model.UntimedBaseEntity;
+import edu.cmu.cs.lti.discoursedb.core.model.BaseEntity;
 import edu.cmu.cs.lti.discoursedb.core.model.user.User;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -49,9 +49,7 @@ import lombok.ToString;
 @ToString(callSuper=true, exclude={"discourseToDiscourseParts","users"})
 @Entity
 @Table(name = "discourse", indexes = { @Index(name = "discourseNameIndex", columnList = "name") })
-public class Discourse extends UntimedBaseEntity implements Serializable {
-
-	private static final long serialVersionUID = -3736157436274230022L;
+public class Discourse extends BaseEntity implements Identifiable<Long> {
 
 	public Discourse(String name){
 		Assert.hasText(name);

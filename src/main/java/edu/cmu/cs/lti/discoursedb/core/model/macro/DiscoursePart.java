@@ -1,22 +1,20 @@
 package edu.cmu.cs.lti.discoursedb.core.model.macro;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntityWithSource;
+import org.springframework.hateoas.Identifiable;
+
+import edu.cmu.cs.lti.discoursedb.core.model.TypedTimedAnnotatableSourcedBE;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,9 +43,7 @@ import lombok.ToString;
 @ToString(callSuper=true, exclude={"discourseToDiscourseParts","discoursePartContributions","sourceOfDiscoursePartRelations","targetOfDiscoursePartRelations"})
 @Entity
 @Table(name="discourse_part", indexes = { @Index(name = "discoursePartNameIndex", columnList = "name") })
-public class DiscoursePart extends TimedAnnotatableBaseEntityWithSource implements Serializable{
-
-	private static final long serialVersionUID = -7341483666466458901L;
+public class DiscoursePart extends TypedTimedAnnotatableSourcedBE implements Identifiable<Long> {
 
 	@Id
 	@Column(name="id_discourse_part", nullable=false)
@@ -56,10 +52,6 @@ public class DiscoursePart extends TimedAnnotatableBaseEntityWithSource implemen
 	private Long id;
 	
 	private String name;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name = "fk_discourse_part_type")
-	private DiscoursePartType type;
 	
     @OneToMany(mappedBy = "discoursePart")
 	private Set<DiscourseToDiscoursePart> discourseToDiscourseParts = new HashSet<DiscourseToDiscoursePart>();

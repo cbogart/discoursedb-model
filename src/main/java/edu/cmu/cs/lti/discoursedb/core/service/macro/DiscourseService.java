@@ -12,13 +12,15 @@ import edu.cmu.cs.lti.discoursedb.core.model.macro.Discourse;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.DiscoursePart;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.QDiscourse;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.DiscourseRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 @Service
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class DiscourseService {
 
-	@Autowired
-	private DiscourseRepository discourseRepository;
+	private final @NonNull DiscourseRepository discourseRepository;
 
 	/**
 	 * Returns a Discourse object with the given name if it exists or creates a
@@ -31,17 +33,9 @@ public class DiscourseService {
 	 *         newly created
 	 */
 	public Discourse createOrGetDiscourse(String name) {
-		Assert.hasText(name);
-
-		Optional<Discourse> curOptDiscourse = discourseRepository.findOneByName(name);
-		Discourse curDiscourse;
-		if (curOptDiscourse.isPresent()) {
-			curDiscourse = curOptDiscourse.get();
-		} else {
-			curDiscourse = new Discourse(name);
-			curDiscourse = discourseRepository.save(curDiscourse);
-		}
-		return curDiscourse;
+		Assert.hasText(name, "Discourse name cannot be empty");
+		return discourseRepository.findOneByName(name).orElseGet(()->{
+			return discourseRepository.save(new Discourse(name));});
 	}
 	
 	/**
@@ -51,7 +45,7 @@ public class DiscourseService {
 	 * @return an Optional containing the Discourse object with the given name if it exists 
 	 */
 	public Optional<Discourse> findOne(String name) {
-		Assert.hasText(name);
+		Assert.hasText(name, "Discourse name cannot be empty");
 		return discourseRepository.findOneByName(name);
 	}
 
@@ -63,16 +57,16 @@ public class DiscourseService {
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Optional<Discourse> findOne(DiscoursePart discoursePart){
-		Assert.notNull(discoursePart);
-
+		Assert.notNull(discoursePart, "DiscoursePart cannot be null.");
+		
 		return Optional.ofNullable(discourseRepository
 				.findOne(QDiscourse.discourse.discourseToDiscourseParts.any().discoursePart.eq(discoursePart)));
 	}
 	
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
 	public Discourse findOne(Long id){
-		Assert.notNull(id);
-		Assert.isTrue(id>0);
+		Assert.notNull(id, "Id cannot be null.");
+		Assert.isTrue(id>0, "Id must be a positive number.");
 
 		return discourseRepository.findOne(id);
 	}
@@ -88,7 +82,7 @@ public class DiscourseService {
 	 *         the save process
 	 */
 	public Discourse save(Discourse discourse) {
-		Assert.notNull(discourse);
+		Assert.notNull(discourse, "Discourse cannot be null.");
 
 		return discourseRepository.save(discourse);
 	}

@@ -9,26 +9,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Context;
-import edu.cmu.cs.lti.discoursedb.core.model.macro.ContextType;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.Contribution;
 import edu.cmu.cs.lti.discoursedb.core.model.macro.ContributionContext;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContextRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContextTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.macro.ContributionContextRepository;
 import edu.cmu.cs.lti.discoursedb.core.type.ContextTypes;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
 @Service
+@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class ContextService {
 
-	@Autowired
-	private ContextRepository contextRepo;
-	@Autowired
-	private ContextTypeRepository contextTypeRepo;
-	@Autowired
-	private ContributionContextRepository contributionContextRepo;
+	private final @NonNull ContextRepository contextRepo;
+	private final @NonNull ContributionContextRepository contributionContextRepo;
 	
-	/**
+	/**s
 	 * Retrieves existing or creates a new ContextType entity with the
 	 * provided type. It then creates a new empty Context entity and
 	 * connects it with the type. Both changed/created entities are saved to
@@ -41,19 +38,9 @@ public class ContextService {
 	 *         connected with its requested type
 	 */
 	public Context createTypedContext(ContextTypes type){
-		Assert.notNull(type);
-		Optional<ContextType> existingContextType = contextTypeRepo.findOneByType(type.name());
-		ContextType contextType = null;
-		if(existingContextType.isPresent()){
-			contextType = existingContextType.get();
-		}else{
-			contextType = new ContextType();
-			contextType.setType(type.name());
-			contextType= contextTypeRepo.save(contextType);
-		}
-
+		Assert.notNull(type, "Context type cannot be null.s");
 		Context context = new Context();
-		context.setType(contextType);
+		context.setType(type.name());
 		return contextRepo.save(context);
 	}		
 	
@@ -65,8 +52,8 @@ public class ContextService {
 	 * @param contrib the contribution that is part of the given DiscoursePart.
 	 */
 	public void addContributionToContext(Context context, Contribution contrib){	
-		Assert.notNull(context);
-		Assert.notNull(contrib);
+		Assert.notNull(context, "Context cannot be null.");
+		Assert.notNull(contrib, "Contribution to add to Context cannot be null.");
 		Optional<ContributionContext> existingContributionContext = contributionContextRepo.findOneByContributionAndContext(contrib, context);
 		if(!existingContributionContext.isPresent()){
 			ContributionContext contributionContext = new ContributionContext();
@@ -80,12 +67,13 @@ public class ContextService {
 	}
 	
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
-	public Context findOne(long id){
-		Assert.isTrue(id>0);
+	public Context findOne(Long id){
+		Assert.notNull(id, "Context id cannot be null.");
+		Assert.isTrue(id>0, "Context id has to be a positive number.");
 		return contextRepo.findOne(id);
 	}
 	public Context save(Context ctx){
-		Assert.notNull(ctx);
+		Assert.notNull(ctx, "Context cannot be null.");
 		return contextRepo.save(ctx);
 	}
 	

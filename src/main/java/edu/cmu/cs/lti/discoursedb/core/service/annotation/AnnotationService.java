@@ -3,7 +3,6 @@ package edu.cmu.cs.lti.discoursedb.core.service.annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,58 +11,55 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntity;
-import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBaseEntityWithSource;
+import edu.cmu.cs.lti.discoursedb.core.model.TimedAnnotatableBE;
+import edu.cmu.cs.lti.discoursedb.core.model.TypedTimedAnnotatableBE;
+import edu.cmu.cs.lti.discoursedb.core.model.annotation.AnnotationAggregate;
 import edu.cmu.cs.lti.discoursedb.core.model.annotation.AnnotationInstance;
-import edu.cmu.cs.lti.discoursedb.core.model.annotation.AnnotationType;
-import edu.cmu.cs.lti.discoursedb.core.model.annotation.Annotations;
 import edu.cmu.cs.lti.discoursedb.core.model.annotation.Feature;
-import edu.cmu.cs.lti.discoursedb.core.model.annotation.FeatureType;
 import edu.cmu.cs.lti.discoursedb.core.repository.annotation.AnnotationInstanceRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.annotation.AnnotationTypeRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.annotation.AnnotationsRepository;
 import edu.cmu.cs.lti.discoursedb.core.repository.annotation.FeatureRepository;
-import edu.cmu.cs.lti.discoursedb.core.repository.annotation.FeatureTypeRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
 @Service
+@Transactional(propagation= Propagation.REQUIRED, readOnly=false)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 public class AnnotationService {
 
-	@Autowired private AnnotationInstanceRepository annoInstanceRepo;
-	@Autowired private AnnotationTypeRepository annoTypeRepo;
-	@Autowired private AnnotationsRepository annoRepo;
-	@Autowired private FeatureRepository featureRepo;
-	@Autowired private FeatureTypeRepository featureTypeRepo;
+	private final @NonNull AnnotationInstanceRepository annoInstanceRepo;
+	private final @NonNull AnnotationsRepository annoRepo;
+	private final @NonNull FeatureRepository featureRepo;
 	
 	/**
 	 * Retrieves all annotations for the given entity.
 	 * 
 	 * This is a convenience method. 
-	 * It actually just retrieves content from the entity object, but it performs additional null checks on the annotation aggregate.
+	 * It actually just retrieves annotations from the entity object, but it performs additional null checks on the annotation aggregate.
 	 * 
-	 * @param entity the entity to retrieve the datasource for
-	 * @return a DataSourceInstance with the given descriptor for the given entity
+	 * @param entity the entity to retrieve the annotations for
+	 * @return a set of AnnotationInstances for the given entity
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
-	public <T extends TimedAnnotatableBaseEntityWithSource> Set<AnnotationInstance> findAnnotations(T entity) {
-		Assert.notNull(entity);		
-		Annotations annos = entity.getAnnotations();
+	public <T extends TimedAnnotatableBE> Set<AnnotationInstance> findAnnotations(T entity) {
+		Assert.notNull(entity,"Entity cannot be null. Provide an annotated entity.");		
+		AnnotationAggregate annos = entity.getAnnotations();
 		return annos==null?new HashSet<AnnotationInstance>():annos.getAnnotations();
 	}
-
+	
 	/**
 	 * Retrieves all annotations for the given entity.
 	 * 
 	 * This is a convenience method. 
-	 * It actually just retrieves content from the entity object, but it performs additional null checks on the annotation aggregate.
+	 * It actually just retrieves annotations from the entity object, but it performs additional null checks on the annotation aggregate.
 	 * 
-	 * @param entity the entity to retrieve the datasource for
-	 * @return a DataSourceInstance with the given descriptor for the given entity
+	 * @param entity the entity to retrieve the annotations for
+	 * @return a set of AnnotationInstances for the given entity
 	 */
 	@Transactional(propagation= Propagation.REQUIRED, readOnly=true)
-	public <T extends TimedAnnotatableBaseEntity> Set<AnnotationInstance> findAnnotations(T entity) {
-		Assert.notNull(entity);		
-		Annotations annos = entity.getAnnotations();
+	public <T extends TypedTimedAnnotatableBE> Set<AnnotationInstance> findAnnotations(T entity) {
+		Assert.notNull(entity,"Entity cannot be null. Provide an annotated entity.");		
+		AnnotationAggregate annos = entity.getAnnotations();
 		return annos==null?new HashSet<AnnotationInstance>():annos.getAnnotations();
 	}
 	
@@ -77,20 +73,10 @@ public class AnnotationService {
 	 *         connected with its requested type
 	 */
 	public AnnotationInstance createTypedAnnotation(String type){
-		Assert.hasText(type);
+		Assert.hasText(type,"Type cannot be empty. Provide an annotation type or create untyped AnnotationInstance.");
 		
-		Optional<AnnotationType> existingAnnoType = annoTypeRepo.findOneByType(type);
-		AnnotationType annoType = null;
-		if(existingAnnoType.isPresent()){
-			annoType = existingAnnoType.get();
-		}else{
-			annoType = new AnnotationType();
-			annoType.setType(type);
-			annoType= annoTypeRepo.save(annoType);
-		}
-
 		AnnotationInstance annotation = new AnnotationInstance();
-		annotation.setType(annoType);
+		annotation.setType(type);
 		return annoInstanceRepo.save(annotation);
 	}	
 	
@@ -104,7 +90,7 @@ public class AnnotationService {
 	 *         connected with its requested type
 	 */
 	public Feature createFeature(String value){
-		Assert.hasText(value);
+		Assert.hasText(value,"Feature value cannot be empty.");
 		
 		Feature feature = new Feature();		
 		feature.setValue(value);
@@ -123,8 +109,8 @@ public class AnnotationService {
 	 *         connected with its requested type
 	 */
 	public Feature createTypedFeature(String value, String type){
-		Assert.hasText(value);
-		Assert.hasText(type);
+		Assert.hasText(value,"Feature value cannot be empty.");
+		Assert.hasText(type,"Type cannot be empty. Provide a feature type or create untype feature.");
 		
 		Feature feature = createTypedFeature(type);		
 		feature.setValue(value);		
@@ -141,20 +127,10 @@ public class AnnotationService {
 	 *         connected with its requested type
 	 */
 	public Feature createTypedFeature(String type){
-		Assert.hasText(type);
+		Assert.hasText(type,"Type cannot be empty. Provide a feature type or create untyped feature.");
 		
-		Optional<FeatureType> existingFeatureType = featureTypeRepo.findOneByType(type);
-		FeatureType featureType = null;
-		if(existingFeatureType.isPresent()){
-			featureType = existingFeatureType.get();
-		}else{
-			featureType = new FeatureType();
-			featureType.setType(type);
-			featureType= featureTypeRepo.save(featureType);
-		}
-
 		Feature feature = new Feature();
-		feature.setType(featureType);
+		feature.setType(type);
 		return featureRepo.save(feature);
 	}	
 	
@@ -166,15 +142,39 @@ public class AnnotationService {
 	 * @param annotation
 	 *            the annotation instance to add to the entity
 	 */
-	public <T extends TimedAnnotatableBaseEntity> void addAnnotation(T entity, AnnotationInstance annotation) {		
-		Assert.notNull(entity);
-		Assert.notNull(annotation);
+	public <T extends TypedTimedAnnotatableBE> void addAnnotation(T entity, AnnotationInstance annotation) {		
+		Assert.notNull(entity,"Entity cannot be null. Provide an annotatable entity.");
+		Assert.notNull(annotation, "Annotation cannot be null.");
 
 		//the annotations aggregate is a proxy for the entity
 		//all annotation instantimeAnnotatableBaseEntityRepo.ces are connected to the aggregate which is finally connected to the annotated entity
-		Annotations annoAggregate = entity.getAnnotations();
+		AnnotationAggregate annoAggregate = entity.getAnnotations();
 		if (annoAggregate == null) {
-			annoAggregate=annoRepo.save(new Annotations());
+			annoAggregate=annoRepo.save(new AnnotationAggregate());
+			entity.setAnnotations(annoAggregate);
+		}
+		annotation.setAnnotationAggregate(annoAggregate);
+		annotation = annoInstanceRepo.save(annotation);
+		annoAggregate.addAnnotation(annotation);
+	}
+	
+	/**
+	 * Adds a new annotation instance to the provided entity.<br/>
+	 * 
+	 * @param entity
+	 *            the entity to add a new source to
+	 * @param annotation
+	 *            the annotation instance to add to the entity
+	 */
+	public <T extends TimedAnnotatableBE> void addAnnotation(T entity, AnnotationInstance annotation) {		
+		Assert.notNull(entity,"Entity cannot be null. Provide an annotatable entity.");
+		Assert.notNull(annotation, "Annotation cannot be null.");
+
+		//the annotations aggregate is a proxy for the entity
+		//all annotation instantimeAnnotatableBaseEntityRepo.ces are connected to the aggregate which is finally connected to the annotated entity
+		AnnotationAggregate annoAggregate = entity.getAnnotations();
+		if (annoAggregate == null) {
+			annoAggregate=annoRepo.save(new AnnotationAggregate());
 			entity.setAnnotations(annoAggregate);
 		}
 		annotation.setAnnotationAggregate(annoAggregate);
@@ -188,8 +188,8 @@ public class AnnotationService {
 	 * @param annotation
 	 *            the annotation instance to add to delete
 	 */
-	public <T extends TimedAnnotatableBaseEntity> void deleteAnnotation(AnnotationInstance annotation) {		
-		Assert.notNull(annotation);
+	public <T extends TypedTimedAnnotatableBE> void deleteAnnotation(AnnotationInstance annotation) {		
+		Assert.notNull(annotation,"Annotation to delete cannot be null.");
 		annotation.getAnnotationAggregate().removeAnnotation(annotation);		
 		Set<Feature> features = annotation.getFeatures();
 		if(features!=null&&!features.isEmpty()){
@@ -204,8 +204,8 @@ public class AnnotationService {
 	 * @param annotation
 	 *            the annotation instance to add to delete
 	 */
-	public <T extends TimedAnnotatableBaseEntity> void deleteAnnotations(Iterable<AnnotationInstance> annotations) {		
-		Assert.notNull(annotations);
+	public <T extends TypedTimedAnnotatableBE> void deleteAnnotations(Iterable<AnnotationInstance> annotations) {		
+		Assert.notNull(annotations, "Annotation iterable cannot be null.");
 
 		List<Feature> featuresToDelete = new ArrayList<>();
 		for(AnnotationInstance anno:annotations){
@@ -227,10 +227,24 @@ public class AnnotationService {
 	 * @param type
 	 * 			  the annotation type to check for
 	 */
-	public <T extends TimedAnnotatableBaseEntity> boolean hasAnnotationType(T entity, String type) {		
-		Assert.notNull(entity);
-		Assert.hasText(type);		
-		return entity.getAnnotations().getAnnotations().stream().filter(e -> e.getType()!=null).anyMatch(e -> e.getType().getType().equals(type));		
+	public <T extends TypedTimedAnnotatableBE> boolean hasAnnotationType(T entity, String type) {		
+		Assert.notNull(entity,"Entity cannot be null. Provide an annotated entity.");
+		Assert.hasText(type,"Type cannot be empty. Provide an annotation type.");		
+		return entity.getAnnotations().getAnnotations().stream().filter(e -> e.getType()!=null).anyMatch(e -> e.getType().equalsIgnoreCase(type));		
+	}
+	
+	/**
+	 * Checks whether the given enity has an annotation of the given type.
+	 * 
+	 * @param entity
+	 *            the entity to check for annotations
+	 * @param type
+	 * 			  the annotation type to check for
+	 */
+	public <T extends TimedAnnotatableBE> boolean hasAnnotationType(T entity, String type) {		
+		Assert.notNull(entity,"Entity cannot be null. Provide an annotated entity.");
+		Assert.hasText(type,"Type cannot be empty. Provide an annotation type.");		
+		return entity.getAnnotations().getAnnotations().stream().filter(e -> e.getType()!=null).anyMatch(e -> e.getType().equalsIgnoreCase(type));		
 	}
 	
 	/**
@@ -242,8 +256,8 @@ public class AnnotationService {
 	 *            the new feature to add
 	 */
 	public void addFeature(AnnotationInstance annotation, Feature feature) {		
-		Assert.notNull(annotation);
-		Assert.notNull(feature);		
+		Assert.notNull(annotation, "Annotation cannot be null.");
+		Assert.notNull(feature, "Feature cannot be null.");		
 		feature.setAnnotation(annotation);
 		annotation.addFeature(feature);
 	}
